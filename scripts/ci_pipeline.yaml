@@ -1,0 +1,45 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libmnl-dev libmicrohttpd-dev libprom-dev cmake libelf-dev bc
+
+      - name: Setup Linux kernel source
+        run: |
+          git clone --depth=1 https://github.com/torvalds/linux.git kernel-src
+          echo "KERNEL_SRC=$PWD/kernel-src" >> $GITHUB_ENV
+
+      - name: Build kernel module
+        run: |
+          make -C $KERNEL_SRC M=$GITHUB_WORKSPACE/kernel modules
+
+      - name: Build user-space utilities
+        run: |
+          cmake -S user -B build
+          cmake --build build
+
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          ./tests/run.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: virtio-nic-build
+          path: |
+            kernel/*.ko
+            build

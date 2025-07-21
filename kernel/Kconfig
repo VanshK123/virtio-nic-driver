@@ -3,17 +3,7 @@
 #
 
 config VIRTIO_NIC
-    tristate "VirtIO Paravirtualized NIC front-end driver"
-    depends on NET
-    depends on VIRTIO_PCI
-    select NETDEVICES
-    select NET_POLL_CONTROLLER
+    bool "VirtIO Paravirtualized NIC front-end driver"
+    depends on PCI && VIRTIO_PCI
     help
-      Enable the VirtIO Paravirtualized NIC driver, delivering:
-        • Multi-queue TX/RX with adaptive scheduling
-        • MSI-X interrupt vectors with coalescing
-        • Zero-copy DMA buffer management
-        • Dynamic queue remapping for multi-AZ fail-over
-        • In-kernel telemetry hooks for per-flow QoS and error tracking
-
-      Choose M to compile as a module, Y to build-in, or N to disable.
+      Enable support for the next-gen VirtIO NIC driver with multi-AZ resilience.
