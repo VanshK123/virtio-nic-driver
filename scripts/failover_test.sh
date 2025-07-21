@@ -19,17 +19,17 @@ get_ip() {
 PRIMARY_IP=$(get_ip "$PRIMARY_ID")
 SECONDARY_IP=$(get_ip "$SECONDARY_ID")
 
-ssh -o StrictHostKeyChecking=no ec2-user@${PRIMARY_IP} "nohup iperf3 -s > /tmp/iperf_server.log 2>&1 &"
-ssh -o StrictHostKeyChecking=no ec2-user@${SECONDARY_IP} "nohup iperf3 -s > /tmp/iperf_server.log 2>&1 &"
+ssh -o StrictHostKeyChecking=no ec2-user@"${PRIMARY_IP}" "nohup iperf3 -s > /tmp/iperf_server.log 2>&1 &"
+ssh -o StrictHostKeyChecking=no ec2-user@"${SECONDARY_IP}" "nohup iperf3 -s > /tmp/iperf_server.log 2>&1 &"
 
 echo "Measuring baseline performance against primary"
-iperf3 -c ${PRIMARY_IP} -t ${DURATION} > baseline.txt
+iperf3 -c "${PRIMARY_IP}" -t "${DURATION}" > baseline.txt
 
 echo "Stopping primary instance to simulate failure"
-aws ec2 stop-instances --instance-ids ${PRIMARY_ID}
+aws ec2 stop-instances --instance-ids "${PRIMARY_ID}"
 
 START=$(date +%s)
-until iperf3 -c ${SECONDARY_IP} -t ${DURATION} > failover.txt; do
+until iperf3 -c "${SECONDARY_IP}" -t "${DURATION}" > failover.txt; do
     sleep 5
 done
 END=$(date +%s)
