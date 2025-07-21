@@ -150,12 +150,3 @@ Monitor metrics in Grafana by adding Prometheus job:
    ```
 
 ---
-
-## Documentation
-
-- **Whitepaper** (`docs/whitepaper.md`) — Architecture & trade‑offs  
-- **API Spec** (`docs/api_spec.md`) — Kernel/User interfaces  
-- **Benchmark Report** (`docs/benchmark_report.md`) — Throughput & latency graphs  
-- **Integration Guide** (`docs/integration_guide.md`) — Step‑by‑step deployment  
-
----
